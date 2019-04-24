@@ -53,6 +53,7 @@
         tr {
             td {
                 padding: 0;
+                position: relative;
                 vertical-align: top;
 
                 &:first-child, &:last-child {

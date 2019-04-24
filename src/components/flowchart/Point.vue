@@ -64,6 +64,10 @@
             this.$el.ondragstart = (e) => {
                 e.stopPropagation();
 
+                log(this);
+
+                this.activate();
+
                 e.dataTransfer.setData('text/plain', JSON.stringify({
                     node: this.node,
                     index: this.index,
@@ -78,6 +82,8 @@
                 let data = JSON.parse(e.dataTransfer.getData('text/plain') || '{}');
 
                 if ((this.type === 'in' && data.type === 'out') || this.type === 'out' && data.type === 'in') {
+                    this.activate();
+
                     this.$emit('link', {
                         one: this.one,
                         startNode: (this.type === 'out') ? this.node : data.node,
@@ -93,6 +99,12 @@
                     })
                 }
             };
+        },
+
+        methods: {
+            activate: function () {
+                this.$store.commit('flowchart/UPDATE_ACTIVE', this.node)
+            },
         }
     }
 </script>

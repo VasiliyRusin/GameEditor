@@ -1,0 +1,21 @@
+$browser-context: 16;
+
+@function _em($pixels: 0, $context: $browser-context, $unit: 1px) {
+    @if (unitless($pixels)) {
+        $pixels: $pixels * 1px;
+    }
+
+    @if (unitless($context)) {
+        $context: $context * 1px;
+    }
+
+    @return $pixels / $context * $unit;
+}
+
+@function em($pixels, $context: $browser-context) {
+    @return _em($pixels, $context, 1em);
+}
+
+@function rem($pixels, $context: $browser-context) {
+    @return _em($pixels, $context, 1rem);
+}

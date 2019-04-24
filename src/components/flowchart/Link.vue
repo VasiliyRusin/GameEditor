@@ -1,6 +1,6 @@
 <template>
     <svg xmlns="http://www.w3.org/2000/svg">
-        <g>
+        <g :style="{transform: transform}">
             <path :d="path"></path>
             <circle :cx="points.x1 + 1" :cy="points.y1" r="6"></circle>
             <circle :cx="points.x2 - 1" :cy="points.y2" r="6"></circle>
@@ -20,6 +20,11 @@
         },
 
         computed: {
+            transform: function () {
+                let offset = (100 - this.scale * 100) / 2;
+                return `translate(${offset}%, ${offset}%) scale(${this.scale})`
+            },
+
             scale: function () {
                 return this.$store.getters['flowchart/scale'];
             },
@@ -51,8 +56,9 @@
                     else offset.p1.x = 0;
                 }
 
-                return `M${p.x1},${p.y1} C${p.x1 + offset.p1.x},${p.y1 + offset.p1.y} ${p.x2 - offset.p2.x},` +
-                    `${p.y2 + offset.p2.y} ${p.x2},${p.y2}`;
+                return `M${p.x1},${p.y1} ` +
+                    `C${p.x1 + offset.p1.x},${p.y1 + offset.p1.y} ${p.x2 - offset.p2.x},${p.y2 + offset.p2.y} ` +
+                    `${p.x2},${p.y2}`;
             }
         }
     }

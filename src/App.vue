@@ -1,5 +1,5 @@
 <template>
-    <table id="app">
+    <table class="root" id="app">
         <tr>
             <td>
                 <header>
@@ -15,6 +15,7 @@
                                 <router-link to="/flowchart">Flowchart</router-link>
                             </li>
                         </ul>
+                        <button @click="toggleFullscreen()" class="fullscreen">&nbsp;</button>
                     </nav>
                 </header>
             </td>
@@ -26,6 +27,26 @@
         </tr>
     </table>
 </template>
+
+<script>
+    export default {
+        name: "App",
+
+        data: function () {
+            return {}
+        },
+
+        methods: {
+            toggleFullscreen: function () {
+                if (!document.fullscreenElement) {
+                    this.$el.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
+            }
+        }
+    }
+</script>
 
 <style lang="scss">
     #app {
@@ -43,17 +64,32 @@
 </style>
 
 <style lang="scss" scoped>
+    @import "scss/functions";
+
     table {
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        position: fixed;
         border-collapse: collapse;
         background-color: rebeccapurple;
 
-        & table {
-            position: static;
+        &.root {
+            position: fixed;
+        }
+
+        &:fullscreen {
+            tr {
+                &:first-child {
+                    nav {
+                        button {
+                            &.fullscreen {
+                                background-image: url("./assets/flowchart/minimize.svg") !important;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         tr {
@@ -63,16 +99,22 @@
                 nav {
                     text-align: left;
 
+                    li, button {
+                        padding: 5px;
+                        min-width: rem(29px);
+                        min-height: rem(19px);
+                        display: inline-block;
+                        border-color: lightgray;
+                        background-color: lightgray;
+                    }
+
                     ul {
                         margin: 0;
                         padding: 0;
                         list-style: none;
+                        display: inline-block;
 
                         li {
-                            padding: 5px;
-                            display: inline-block;
-                            background-color: lightgray;
-
                             a {
                                 font-weight: bold;
 
@@ -80,6 +122,19 @@
                                     color: #42b983;
                                 }
                             }
+                        }
+                    }
+
+                    button {
+                        float: right;
+                        border: none;
+                        font-size: inherit;
+
+                        &.fullscreen {
+                            background-size: 60%;
+                            background-position: center;
+                            background-repeat: no-repeat;
+                            background-image: url("./assets/flowchart/maximize.svg");
                         }
                     }
                 }

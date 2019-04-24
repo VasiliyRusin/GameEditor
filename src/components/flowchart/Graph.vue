@@ -1,35 +1,26 @@
 <template>
     <div>
-        <div :style="{transform: `scale(${scale})`}" class="flowchart">
+        <div :style="{transform: `scale(${scale})`}" @click.stop="active = null" class="flowchart">
             <template v-for="(element, index) in flowchart">
-                <Start :index="index" :key="index" @link="createLink" @move="componentMove"
-                       ref="Component" v-if="element.type === 'Start'"></Start>
-                <Scene :index="index" :key="index" @link="createLink" @move="componentMove"
-                       ref="Component" v-else-if="element.type === 'Scene'"></Scene>
-                <End :index="index" :key="index" @link="createLink" @move="componentMove"
-                     ref="Component" v-else-if="element.type === 'End'"></End>
+                <Node :index="index" :key="index" @link="createLink" @move="componentMove" ref="Component"></Node>
             </template>
         </div>
         <div class="links">
-            <Link :points="link.points" :style="{transform: `scale(${scale})`}" v-for="link in links"></Link>
+            <Link :points="link.points" v-for="link in links"></Link>
         </div>
     </div>
 </template>
 
 <script>
-    import Start from "@/components/flowchart/Start";
-    import Scene from "@/components/flowchart/Scene";
-    import End from "@/components/flowchart/End";
+    import Node from "@/components/flowchart/Node";
     import Link from "@/components/flowchart/Link";
 
     export default {
         name: "Graph",
 
         components: {
-            Link,
-            Start,
-            Scene,
-            End
+            Node,
+            Link
         },
 
         mounted: function () {
@@ -43,7 +34,7 @@
                 }
             };
 
-            this.drop = function (e) {
+            this.drop = (e) => {
                 let data = JSON.parse(e.dataTransfer.getData('text/plain') || '{}');
 
                 if (data.type != null) {
@@ -56,17 +47,15 @@
                         h: 150,
                     });
                 }
-            }.bind(this);
-
-            this.$el.ondragover = this.$el.ondragenter = function (e) {
-                e.preventDefault();
             };
 
-            this.wheel = function (e) {
+            this.$el.ondragover = this.$el.ondragenter = (e) => e.preventDefault();
+
+            this.wheel = (e) => {
                 this.scale += e.deltaY / 2000;
                 if (this.scale < 0.1) this.scale = 0.1;
                 else if (this.scale > 2.5) this.scale = 2.5;
-            }.bind(this);
+            };
 
             this.$el.addEventListener('wheel', this.wheel);
             this.$el.addEventListener('drop', this.drop);
@@ -85,6 +74,16 @@
 
             links: function () {
                 return this.$store.getters['flowchart/links'];
+            },
+
+            active: {
+                get: function () {
+                    return this.$store.getters['flowchart/active'];
+                },
+
+                set: function (value) {
+                    this.$store.commit('flowchart/UPDATE_ACTIVE', value)
+                }
             },
 
             scale: {
@@ -156,7 +155,14 @@
         width: 100%;
         height: 100%;
         overflow: hidden;
-        position: relative;
+        position: absolute;
+
+        & div {
+            width: initial;
+            height: initial;
+            overflow: initial;
+            position: initial;
+        }
 
         .flowchart {
             width: auto;

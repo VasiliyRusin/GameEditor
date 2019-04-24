@@ -8,6 +8,7 @@ let templates = {
         y: 0,
         w: 300,
         h: 150,
+        removable: false,
         points: [
             {
                 type: 'out',
@@ -22,6 +23,7 @@ let templates = {
         y: 0,
         w: 300,
         h: 150,
+        removable: true,
         points: [
             {
                 type: 'in',
@@ -40,6 +42,7 @@ let templates = {
         y: 0,
         w: 300,
         h: 150,
+        removable: true,
         points: [
             {
                 type: 'in',
@@ -52,7 +55,8 @@ let templates = {
 export default {
     namespaced: true,
     state: {
-        scale: 1.,
+        scale: 1,
+        active: null,
         nodes: [
             {
                 type: 'Start',
@@ -61,6 +65,7 @@ export default {
                 y: 0,
                 w: 300,
                 h: 150,
+                removable: false,
                 points: [
                     {
                         type: 'out',
@@ -98,7 +103,8 @@ export default {
             commit('ADD_NODE', node);
         },
 
-        remove_node: function ({commit, dispatch}, index) {
+        remove_node: function ({state, commit, dispatch}, index) {
+            if (state.active === index) commit('UPDATE_ACTIVE', null);
             dispatch('remove_links_from_node', index);
             dispatch('update_links', index);
 
@@ -164,6 +170,10 @@ export default {
         UPDATE_SCALE: function (state, value) {
             state.scale = value;
         },
+
+        UPDATE_ACTIVE: function (state, value) {
+            state.active = value;
+        },
     },
     getters: {
         nodes: function (state) {
@@ -172,6 +182,10 @@ export default {
 
         links: function (state) {
             return state.links;
+        },
+
+        active: function (state) {
+            return state.active;
         },
 
         scale: function (state) {
