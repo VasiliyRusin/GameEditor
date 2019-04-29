@@ -2,14 +2,14 @@
     <div class="points">
         <ul>
             <template v-for="(point, index) in points">
-                <Point :index="index" :key="index" :label="point.label"
+                <Point :index="index" :key="index" :label="point.label" :one="point.one"
                        :node="$parent.index" :type="point.type" @link="$emit('link', $event)"
                        v-if="point.type === 'in'"></Point>
             </template>
         </ul>
         <ul>
             <template v-for="(point, index) in points">
-                <Point :index="index" :key="index" :label="point.label"
+                <Point :index="index" :key="index" :label="point.label" :one="point.one"
                        :node="$parent.index" :type="point.type" @link="$emit('link', $event)"
                        v-if="point.type === 'out' || point.type == null"></Point>
             </template>
@@ -18,7 +18,7 @@
 </template>
 
 <script>
-    import Point from "@/components/flowchart/Point";
+    import Point from "@/components/flowchart/graph/Point";
 
     export default {
         name: "Points",

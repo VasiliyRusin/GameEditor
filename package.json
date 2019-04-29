@@ -9,11 +9,13 @@
   },
   "dependencies": {
     "core-js": "^2.6.5",
+    "fontfaceobserver": "^2.1.0",
     "register-service-worker": "^1.6.2",
     "tar": "^4.4.8",
     "vue": "^2.6.10",
     "vue-router": "^3.0.3",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "vuex-persistedstate": "^2.5.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.3",

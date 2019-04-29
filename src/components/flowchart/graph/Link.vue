@@ -1,6 +1,6 @@
 <template>
     <svg xmlns="http://www.w3.org/2000/svg">
-        <g :style="{transform: transform}">
+        <g :style="{ transform: transform }">
             <path :d="path"></path>
             <circle :cx="points.x1 + 1" :cy="points.y1" r="6"></circle>
             <circle :cx="points.x2 - 1" :cy="points.y2" r="6"></circle>

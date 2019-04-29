@@ -2,7 +2,7 @@
     <div :style="{transform: `translate(${x}px, ${y}px)`, width: `${w}px`, height: `${h}px`}"
          :class="{ active: active === index }" @click.stop class="component" ref="Root">
         <div class="wrapper">
-            <button @click="remove()" class="remove" v-if="removable"></button>
+            <button @click.stop="remove()" @mousedown.stop class="remove" v-if="removable"></button>
             <div class="card terminal">
                 <div>
                     <h3 class="title">{{ name }}</h3>
@@ -16,11 +16,13 @@
 </template>
 
 <script>
-    import Points from "@/components/flowchart/Points";
+    import NodeComponentPropertiesMixin from "../NodeComponentPropertiesMixin"
+    import Points from "@/components/flowchart/graph/Points";
 
     export default {
         name: "Node",
         components: {Points},
+        mixins: [NodeComponentPropertiesMixin],
         props: {
             index: {
                 type: Number,
@@ -114,70 +116,6 @@
                         node: Object.assign(this.node, value)
                     })
                 }
-            },
-
-            name: {
-                get: function () {
-                    return this.node.name || '';
-                },
-
-                set: function (value) {
-                    this.node = {name: value};
-                }
-            },
-
-            x: {
-                get: function () {
-                    return this.node.x || 0;
-                },
-
-                set: function (value) {
-                    this.node = {x: value};
-                }
-            },
-
-            y: {
-                get: function () {
-                    return this.node.y || 0;
-                },
-
-                set: function (value) {
-                    this.node = {y: value};
-                }
-            },
-
-            w: {
-                get: function () {
-                    return this.node.w || 0;
-                },
-
-                set: function (value) {
-                    this.node = {w: value};
-                }
-            },
-
-            h: {
-                get: function () {
-                    return this.node.h || 0;
-                },
-
-                set: function (value) {
-                    this.node = {h: value};
-                }
-            },
-
-            removable: function () {
-                return (this.node.removable == null) ? true : this.node.removable;
-            },
-
-            points: {
-                get: function () {
-                    return this.node.points || [];
-                },
-
-                set: function (value) {
-                    this.node = {points: value};
-                }
             }
         },
 
@@ -197,7 +135,7 @@
 </script>
 
 <style lang="scss" scoped>
-    @import "scss/node";
+    @import "../scss/node";
 
     .component {
         @include non-select;
@@ -272,6 +210,7 @@
 
                 .title {
                     overflow: hidden;
+                    letter-spacing: 0.06em;
                 }
 
                 @include terminal;

@@ -8,9 +8,13 @@ let templates = {
         y: 0,
         w: 300,
         h: 150,
+        editable: false,
         removable: false,
         points: [
             {
+                one: true,
+                offsetX: 0,
+                offsetY: 0,
                 type: 'out',
                 label: 'Старт'
             }
@@ -23,13 +27,20 @@ let templates = {
         y: 0,
         w: 300,
         h: 150,
+        editable: true,
         removable: true,
         points: [
             {
+                one: true,
+                offsetX: 0,
+                offsetY: 0,
                 type: 'in',
                 label: 'Вход'
             },
             {
+                one: true,
+                offsetX: 0,
+                offsetY: 0,
                 type: 'out',
                 label: 'Выход'
             }
@@ -42,9 +53,13 @@ let templates = {
         y: 0,
         w: 300,
         h: 150,
+        editable: false,
         removable: true,
         points: [
             {
+                one: true,
+                offsetX: 0,
+                offsetY: 0,
                 type: 'in',
                 label: 'Конец'
             }
@@ -58,21 +73,7 @@ export default {
         scale: 1,
         active: null,
         nodes: [
-            {
-                type: 'Start',
-                name: 'Начало',
-                x: 0,
-                y: 0,
-                w: 300,
-                h: 150,
-                removable: false,
-                points: [
-                    {
-                        type: 'out',
-                        label: 'Старт'
-                    }
-                ]
-            }
+            JSON.parse(JSON.stringify(templates.Start))
         ],
         links: [
             // {
@@ -101,6 +102,15 @@ export default {
             node = Object.assign(node, templates[node.type], {x, y});
 
             commit('ADD_NODE', node);
+        },
+
+        update_active_node: function ({state, commit}, node) {
+            if (node != null) {
+                commit('UPDATE_NODE', {
+                    index: state.active,
+                    node: node
+                })
+            }
         },
 
         remove_node: function ({state, commit, dispatch}, index) {
@@ -186,6 +196,10 @@ export default {
 
         active: function (state) {
             return state.active;
+        },
+
+        activeNode: function (state) {
+            return state.nodes[state.active];
         },
 
         scale: function (state) {

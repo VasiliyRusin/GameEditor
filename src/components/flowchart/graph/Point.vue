@@ -1,9 +1,11 @@
 <template>
     <li v-if="type === 'in'">
-        <span class="marker" draggable="true" ref="Point" tabindex="0"></span> {{ label }}
+        <span @dragstart.stop="dragstart" @drop="drop" class="marker" draggable="true" ref="Point"
+              tabindex="0"></span> {{ label }}
     </li>
     <li v-else-if="type === 'out'">
-        {{ label }} <span class="marker" draggable="true" ref="Point" tabindex="0"></span>
+        {{ label }} <span @dragstart.stop="dragstart" @drop="drop" class="marker" draggable="true" ref="Point"
+                          tabindex="0"></span>
     </li>
 </template>
 
@@ -27,6 +29,11 @@
                 required: true
             },
 
+            one: {
+                type: Boolean,
+                required: true
+            },
+
             type: {
                 type: String,
                 default: 'out',
@@ -36,14 +43,11 @@
             }
         },
 
-        data: function () {
-            return {
-                one: true
-            }
-        },
-
         mounted: function () {
             let el = this.$refs.Point;
+
+            //FixMe: Считает offset до загрузки шрифта.
+            // использовать вот эту штуку: https://github.com/bramstein/fontfaceobserver.
 
             this.style = getComputedStyle(el);
             this.offset = {
@@ -60,12 +64,14 @@
             this.$refs.Point.onmousedown = this.$refs.Point.onmousemove = this.$refs.Point.onmouseup = function (e) {
                 e.stopPropagation();
             };
+        },
 
-            this.$el.ondragstart = (e) => {
-                e.stopPropagation();
+        methods: {
+            activate: function () {
+                this.$store.commit('flowchart/UPDATE_ACTIVE', this.node)
+            },
 
-                log(this);
-
+            dragstart: function (e) {
                 this.activate();
 
                 e.dataTransfer.setData('text/plain', JSON.stringify({
@@ -74,14 +80,12 @@
                     type: this.type,
                     offset: this.offset
                 }));
-            };
+            },
 
-            this.$el.ondrop = (e) => {
-                e.stopPropagation();
-
+            drop: function (e) {
                 let data = JSON.parse(e.dataTransfer.getData('text/plain') || '{}');
 
-                if ((this.type === 'in' && data.type === 'out') || this.type === 'out' && data.type === 'in') {
+                if ((this.type === 'in' && data.type === 'out') || (this.type === 'out' && data.type === 'in')) {
                     this.activate();
 
                     this.$emit('link', {
@@ -98,26 +102,23 @@
                         }
                     })
                 }
-            };
-        },
-
-        methods: {
-            activate: function () {
-                this.$store.commit('flowchart/UPDATE_ACTIVE', this.node)
-            },
+            }
         }
     }
 </script>
 
 <style lang="scss" scoped>
+    @import "../../../scss/functions";
     li {
+        letter-spacing: 0.04em;
+
         span {
-            $size: 1em;
+            $size: em(22px);
 
             width: $size;
             height: $size;
+            vertical-align: top;
             display: inline-block;
-            vertical-align: middle;
             background-color: whitesmoke;
         }
     }
